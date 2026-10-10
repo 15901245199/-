@@ -1,0 +1,47 @@
+---
+import { site, categories } from '../data/site';
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="brand" aria-label="返回首页">
+          <span class="brand-mark">尚</span>
+          <span class="brand-text">
+            <strong style="color:#fff">{site.name}</strong>
+            <small style="color:rgba(255,255,255,.55)">{site.enName}</small>
+          </span>
+        </a>
+        <p>{site.slogan} —— {site.description}</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>商品分类</h4>
+        <ul>
+          <li><a href="/products/">全部商品</a></li>
+          {
+            categories.map((c) => (
+              <li><a href={`/products/?category=${c.id}`}>{c.label} · {c.desc}</a></li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>联系我们</h4>
+        <ul>
+          <li>电话：<a href={`tel:${site.phone}`}>{site.phone}</a></li>
+          <li>微信：{site.wechat}</li>
+          <li>地址：{site.address}</li>
+          <li>营业时间：{site.businessHours}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© {new Date().getFullYear()} {site.name} · 演示站点</span>
+      <span>{site.notice}</span>
+    </div>
+  </div>
+</footer>

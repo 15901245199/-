@@ -1,0 +1,37 @@
+---
+import { Splide, SplideSlide } from 'astro-splide';
+import ProductCard from './ProductCard.astro';
+import type { Product } from '../data/products';
+
+interface Props {
+  products: Product[];
+}
+
+const { products } = Astro.props;
+---
+
+<Splide
+  class="product-splide"
+  tag="section"
+  aria-label="商品轮播"
+  options={{
+    perPage: 4,
+    gap: '1.25rem',
+    pagination: false,
+    arrows: true,
+    rewind: true,
+    breakpoints: {
+      1024: { perPage: 3 },
+      768: { perPage: 2 },
+      520: { perPage: 1.15, gap: '0.9rem' },
+    },
+  }}
+>
+  {
+    products.map((p) => (
+      <SplideSlide>
+        <ProductCard product={p} />
+      </SplideSlide>
+    ))
+  }
+</Splide>

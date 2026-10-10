@@ -1,0 +1,90 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { categories } from '../data/site';
+import { products } from '../data/products';
+---
+
+<Layout
+  title="全部商品 · 商品列表"
+  description="浏览全部商品，外套、上装、裤装、裙装四季单品"
+>
+  <div class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="面包屑">
+        <a href="/">首页</a>
+        <span class="sep">/</span>
+        <a href="/products/">全部商品</a>
+      </nav>
+      <h1 id="page-title">全部商品</h1>
+      <p id="page-sub">共 {products.length} 款在售单品，全部支持到店试穿</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="filter-bar" role="group" aria-label="按分类筛选">
+      <span class="filter-label">筛选：</span>
+      <a href="/products/" class="filter-chip" data-filter="all">全部</a>
+      {
+        categories.map((c) => (
+          <a
+            href={`/products/?category=${c.id}`}
+            class="filter-chip"
+            data-filter={c.id}
+          >
+            {c.label}
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="list-meta">
+      <span id="list-count">共 {products.length} 件商品</span>
+      <span>价格均为示例数据，实际以门店为准</span>
+    </div>
+
+    <div class="product-grid" id="product-grid">
+      {
+        products.map((p) => (
+          <div class="grid-item" data-category={p.categoryId}>
+            <ProductCard product={p} />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <script>
+    const chips = document.querySelectorAll('.filter-chip');
+    const items = document.querySelectorAll('.grid-item');
+    const countEl = document.getElementById('list-count');
+    const titleEl = document.getElementById('page-title');
+    const subEl = document.getElementById('page-sub');
+
+    const params = new URLSearchParams(location.search);
+    let current = params.get('category') ?? 'all';
+    const valid = current !== 'all' && [...chips].some((c) => c.dataset.filter === current);
+    if (!valid) current = 'all';
+
+    function apply() {
+      chips.forEach((c) => c.classList.toggle('active', c.dataset.filter === current));
+
+      let shown = 0;
+      items.forEach((it) => {
+        const show = current === 'all' || it.dataset.category === current;
+        it.style.display = show ? '' : 'none';
+        if (show) shown++;
+      });
+
+      countEl.textContent = `共 ${shown} 件商品`;
+      const label =
+        current === 'all'
+          ? '全部商品'
+          : document.querySelector(`.filter-chip[data-filter="${current}"]`)?.textContent ?? '';
+      titleEl.textContent = label;
+      subEl.textContent = `共 ${shown} 款在售单品，全部支持到店试穿`;
+    }
+
+    apply();
+  </script>
+</Layout>

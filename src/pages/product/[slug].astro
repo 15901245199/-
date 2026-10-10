@@ -1,0 +1,156 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ProductCarousel from '../../components/ProductCarousel.astro';
+import { getProduct, getRelated, products } from '../../data/products';
+import { categories } from '../../data/site';
+
+export function getStaticPaths() {
+  return products.map((p) => ({ params: { slug: p.slug } }));
+}
+
+const { slug } = Astro.params;
+const product = getProduct(slug!);
+if (!product) {
+  throw new Error(`未找到商品: ${slug}`);
+}
+const related = getRelated(product);
+const catLabel = categories.find((c) => c.id === product.categoryId)?.label ?? '';
+const discount = product.originalPrice
+  ? Math.round((1 - product.price / product.originalPrice) * 100)
+  : 0;
+---
+
+<Layout title={`${product.name} · ${product.price} 元`} description={product.shortDesc}>
+  <div class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="面包屑">
+        <a href="/">首页</a>
+        <span class="sep">/</span>
+        <a href="/products/">全部商品</a>
+        <span class="sep">/</span>
+        <a href={`/products/?category=${product.categoryId}`}>{catLabel}</a>
+        <span class="sep">/</span>
+        <span>{product.name}</span>
+      </nav>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="detail-grid">
+      <div class="detail-media">
+        <img src={product.image} alt={product.name} />
+      </div>
+
+      <div class="detail-info">
+        <h1>{product.name}</h1>
+        <p class="detail-desc">{product.desc}</p>
+
+        <div class="detail-price">
+          <span class="price">¥{product.price}</span>
+          {
+            product.originalPrice && <del>¥{product.originalPrice}</del>
+          }
+          {
+            discount > 0 && <span class="save">立省 {discount}%</span>
+          }
+          {
+            product.tag && (
+              <span class:list={['tag-badge', `tag-${product.tag}`]}>
+                {{ new: '新品', hot: '热卖', deal: '限时' }[product.tag]}
+              </span>
+            )
+          }
+        </div>
+
+        <div class="detail-row">
+          <div class="row-label">选择颜色</div>
+          <div class="chip-list" id="color-list">
+            {
+              product.colors.map((c) => (
+                <button type="button" class:list={['chip', { selected: c === product.colors[0] }]}>
+                  {c}
+                </button>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="detail-row">
+          <div class="row-label">选择尺码</div>
+          <div class="chip-list" id="size-list">
+            {
+              product.sizes.map((s) => (
+                <button type="button" class:list={['chip', { selected: s === product.sizes[1] ?? product.sizes[0] }]}>
+                  {s}
+                </button>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="detail-row">
+          <div class="row-label">购买数量</div>
+          <div class="qty-wrap">
+            <button type="button" class="qty-btn" data-dir="minus" aria-label="减少数量">−</button>
+            <input class="qty-input" id="qty" type="number" value="1" min="1" max="99" aria-label="购买数量" />
+            <button type="button" class="qty-btn" data-dir="plus" aria-label="增加数量">+</button>
+          </div>
+        </div>
+
+        <div class="detail-actions">
+          <button type="button" class="btn btn-accent btn-block" id="add-to-cart">加入购物车</button>
+        </div>
+
+        <div class="detail-facts">
+          <div><b>面料：</b>{product.fabric}</div>
+          <div><b>库存：</b>{product.stock} 件（实时以门店为准）</div>
+          <div><b>好评：</b>{product.rating} / 5.0</div>
+          <div><b>服务：</b>支持到店试穿 · 支持微信预留</div>
+        </div>
+      </div>
+    </div>
+
+    <section class="section" style="padding-top:1rem">
+      <div class="section-head">
+        <div>
+          <span class="section-kicker">You May Also Like</span>
+          <h2 class="section-title">相关推荐</h2>
+        </div>
+      </div>
+      <ProductCarousel products={related} />
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script define:vars={{ productName: product.name }}>
+    const qtyInput = document.getElementById('qty');
+    document.querySelectorAll('.qty-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const dir = btn.dataset.dir === 'plus' ? 1 : -1;
+        qtyInput.value = Math.max(1, Math.min(99, Number(qtyInput.value) + dir));
+      });
+    });
+
+    document.querySelectorAll('.chip-list').forEach((list) => {
+      list.addEventListener('click', (e) => {
+        if (!(e.target instanceof Element)) return;
+        const chip = e.target.closest('.chip');
+        if (!chip) return;
+        list.querySelectorAll('.chip').forEach((c) => c.classList.remove('selected'));
+        chip.classList.add('selected');
+      });
+    });
+
+    const addBtn = document.getElementById('add-to-cart');
+    const toast = document.getElementById('toast');
+    if (addBtn && toast) {
+      addBtn.addEventListener('click', () => {
+        toast.textContent = `已将 ${qtyInput.value} 件「${productName}」加入购物车（演示功能）`;
+        toast.classList.add('show');
+        clearTimeout(window.__toastTimer);
+        window.__toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+      });
+    }
+  </script>
+</Layout>

@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { site } from '../data/site';
+---
+
+<Layout title="页面未找到" description="您访问的页面不存在">
+  <div class="container" style="text-align:center;padding:7rem 1rem">
+    <div style="font-size:4.5rem;font-weight:800;color:var(--accent)">404</div>
+    <h1 style="margin-top:.5rem">页面未找到</h1>
+    <p style="color:var(--ink-soft);margin-top:.8rem">您访问的页面不存在或已被移动。</p>
+    <a class="btn btn-accent" href="/" style="margin-top:1.8rem">返回 {site.name} 首页</a>
+  </div>
+</Layout>

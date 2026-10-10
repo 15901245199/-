@@ -1,0 +1,85 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { site } from '../data/site';
+
+const values = [
+  { icon: '料', title: '面料先行', desc: '每一批面料都先摸过、试过再上架，亲肤、耐穿是底线。' },
+  { icon: '版', title: '版型讲究', desc: '不只看图片好看，更看上身效果，显瘦、利落是标准。' },
+  { icon: '价', title: '价格实在', desc: '明码实价，不玩虚标，社区店做的是回头客生意。' },
+  { icon: '试', title: '可试可换', desc: '支持到店试穿，尺码不合适可换可调，服务到底。' },
+];
+
+const contacts = [
+  { label: '联系电话', value: site.phone },
+  { label: '微信号', value: site.wechat },
+  { label: '店铺地址', value: site.address },
+  { label: '营业时间', value: site.businessHours },
+];
+---
+
+<Layout title={`关于店铺 · ${site.name}`} description="了解尚衣集的经营理念、服务承诺与联系方式">
+  <div class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="面包屑">
+        <a href="/">首页</a>
+        <span class="sep">/</span>
+        <span>关于店铺</span>
+      </nav>
+      <h1>关于 {site.name}</h1>
+      <p class="about-lead">
+        {site.slogan} —— {site.description}
+      </p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="section-kicker">Our Story</span>
+          <h2 class="section-title">开在街边的店，做踏实的生意</h2>
+        </div>
+      </div>
+      <p class="about-lead">
+        {site.name} 是一家扎根社区的底商服装店。我们相信，服装生意不是快进快出的买卖，
+        而是把合适、耐穿、好看的衣服交到熟客手上的长期关系。
+        全店覆盖男装、女装全品类——外套、上装、裤装、裙装四季单品，
+        选品以「面料、版型、价格」三项为硬标准，宁可少上几款，也不上凑数的货。
+      </p>
+
+      <div class="values-grid">
+        {
+          values.map((v) => (
+            <div class="value-card">
+              <div class="value-icon">{v.icon}</div>
+              <h3>{v.title}</h3>
+              <p>{v.desc}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="section-head" style="margin-top:3rem">
+        <div>
+          <span class="section-kicker">Contact</span>
+          <h2 class="section-title">到店或联系</h2>
+        </div>
+      </div>
+
+      <div class="contact-panel">
+        {
+          contacts.map((c) => (
+            <div class="contact-item">
+              <div class="c-label">{c.label}</div>
+              <div class="c-value">{c.value}</div>
+            </div>
+          ))
+        }
+      </div>
+
+      <div style="margin-top:2rem;font-size:.85rem;color:var(--ink-faint)">
+        提示：{site.notice}
+      </div>
+    </div>
+  </section>
+</Layout>

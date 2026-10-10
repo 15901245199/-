@@ -1,0 +1,62 @@
+---
+import { Splide, SplideSlide } from 'astro-splide';
+
+const slides = [
+  {
+    img: '/images/products/womens-coat.jpg',
+    kicker: '秋冬上新',
+    title: '双面呢羊毛大衣',
+    sub: '赫本风收腰剪裁 · 温暖整个秋冬',
+    href: '/product/womens-coat/',
+    cta: '立即选购',
+  },
+  {
+    img: '/images/products/mens-jacket.jpg',
+    kicker: '春秋爆款',
+    title: '棒球领休闲夹克',
+    sub: '格纹内衬细节 · 通勤出街两相宜',
+    href: '/product/mens-jacket/',
+    cta: '立即选购',
+  },
+  {
+    img: '/images/products/womens-dress.jpg',
+    kicker: '设计师系列',
+    title: '复古碎花连衣裙',
+    sub: '藏青底碎花 · 收腰显瘦文艺范',
+    href: '/product/womens-dress/',
+    cta: '立即选购',
+  },
+];
+---
+
+<Splide
+  class="hero-splide"
+  tag="section"
+  aria-label="首页主视觉轮播"
+  options={{
+    type: 'loop',
+    autoplay: true,
+    interval: 5000,
+    pauseOnHover: false,
+    speed: 800,
+    arrows: true,
+    pagination: true,
+  }}
+>
+  {
+    slides.map((s) => (
+      <SplideSlide>
+        <div class="hero-slide">
+          <img src={s.img} alt="" class="hero-bg" loading="eager" />
+          <div class="hero-overlay"></div>
+          <div class="hero-content container">
+            <span class="hero-kicker">{s.kicker}</span>
+            <h1>{s.title}</h1>
+            <p>{s.sub}</p>
+            <a class="btn btn-light" href={s.href}>{s.cta}</a>
+          </div>
+        </div>
+      </SplideSlide>
+    ))
+  }
+</Splide>

@@ -1,0 +1,117 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HeroCarousel from '../components/HeroCarousel.astro';
+import ProductCarousel from '../components/ProductCarousel.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { site, categories } from '../data/site';
+import { products } from '../data/products';
+
+const newArrivals = products.filter((p) => p.tag === 'new');
+const hotProducts = products.filter((p) => p.tag === 'hot');
+
+const categoryImages: Record<string, string> = {
+  jacket: '/images/products/mens-jacket.jpg',
+  top: '/images/products/mens-hoodie.jpg',
+  bottom: '/images/products/mens-jeans.jpg',
+  dress: '/images/products/womens-dress.jpg',
+};
+---
+
+<Layout title={`${site.name} · ${site.slogan}`} description={site.description}>
+  <HeroCarousel />
+
+  <!-- 分类导览 -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="section-kicker">Categories</span>
+          <h2 class="section-title">按品类选购</h2>
+          <p class="section-sub">外套 · 上装 · 裤装 · 裙装，四季单品一站配齐</p>
+        </div>
+      </div>
+      <div class="category-grid">
+        {
+          categories.map((c) => (
+            <a href={`/products/?category=${c.id}`} class="category-card">
+              <img src={categoryImages[c.id]} alt={c.label} loading="lazy" />
+              <div class="cat-body">
+                <h3>{c.label}</h3>
+                <p>{c.desc}</p>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 新品上架 -->
+  <section class="section" style="background: var(--surface)">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="section-kicker">New Arrivals</span>
+          <h2 class="section-title">新品上架</h2>
+          <p class="section-sub">本季最新到店，抢先试穿</p>
+        </div>
+        <a class="btn btn-outline" href="/products/">查看全部</a>
+      </div>
+      <ProductCarousel products={newArrivals} />
+    </div>
+  </section>
+
+  <!-- 热卖精选 -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="section-kicker">Best Sellers</span>
+          <h2 class="section-title">热卖精选</h2>
+          <p class="section-sub">回头客最多的口碑单品</p>
+        </div>
+        <a class="btn btn-outline" href="/products/">查看全部</a>
+      </div>
+      <div class="product-grid">
+        {
+          hotProducts.map((p) => (
+            <ProductCard product={p} />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 店铺故事 -->
+  <section class="section" style="background: var(--surface)">
+    <div class="container story-grid">
+      <div class="story-media">
+        <img src="/images/products/womens-cardigan.jpg" alt="店铺在售商品陈列" loading="lazy" />
+      </div>
+      <div class="story-body">
+        <span class="section-kicker">About Us</span>
+        <h2>开在街边的店，做踏实的生意</h2>
+        <p>
+          {site.name} 是一家深耕社区的底商服装店。我们不追爆款速食，只挑好面料、好版型、
+          好价格的四季单品——男装女装全品类，从外套到裙装，把每一件衣服都当成要陪客人穿很久的伙伴。
+        </p>
+        <ul class="story-features">
+          <li><span class="dot"></span>面料先行，亲肤耐穿</li>
+          <li><span class="dot"></span>版型讲究，上身显瘦</li>
+          <li><span class="dot"></span>明码实价，不玩虚标</li>
+          <li><span class="dot"></span>可到店试穿，满意再买</li>
+        </ul>
+        <a class="btn btn-accent" href="/about/" style="margin-top:1.6rem">了解店铺</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA 条 -->
+  <section class="cta-band">
+    <div class="container">
+      <h2>欢迎到店试穿</h2>
+      <p>{site.address} · {site.businessHours}</p>
+      <a class="btn btn-light" href="/products/">浏览全部商品</a>
+    </div>
+  </section>
+</Layout>

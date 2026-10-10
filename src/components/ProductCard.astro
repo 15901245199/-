@@ -1,0 +1,47 @@
+---
+import type { Product } from '../data/products';
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+
+const tagMap: Record<NonNullable<Product['tag']>, string> = {
+  new: '新品',
+  hot: '热卖',
+  deal: '限时',
+};
+
+const discount = product.originalPrice
+  ? Math.round((1 - product.price / product.originalPrice) * 100)
+  : 0;
+---
+
+<article class="product-card">
+  <a href={`/product/${product.slug}/`} class="card-media" aria-label={product.name}>
+    <img src={product.image} alt={product.name} loading="lazy" />
+    {
+      product.tag && (
+        <span class:list={['tag-badge', 'card-tag', `tag-${product.tag}`]}>
+          {tagMap[product.tag]}
+        </span>
+      )
+    }
+    {
+      product.originalPrice && (
+        <span class="card-discount">-{discount}%</span>
+      )
+    }
+  </a>
+  <div class="card-body">
+    <h3><a href={`/product/${product.slug}/`}>{product.name}</a></h3>
+    <p class="card-desc">{product.shortDesc}</p>
+    <div class="card-price">
+      <span class="price">¥{product.price}</span>
+      {
+        product.originalPrice && <del>¥{product.originalPrice}</del>
+      }
+    </div>
+  </div>
+</article>
